@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Destiny RP — Consultation Avis Staff</title>
+<title>Avista — Destiny V2</title>
 <style>
 body{
   margin:0; font-family:"Segoe UI",Arial,sans-serif; color:#f5f5f5;
@@ -11,10 +11,19 @@ body{
     linear-gradient(rgba(15,7,35,0.88), rgba(15,7,35,0.88)),
     url("banniere.jpg") center / cover no-repeat fixed;
 }
-.header{ text-align:center; padding:80px 20px 40px; }
-.header h1{ margin:0; font-size:36px; background: rgba(76,29,149,0.75);
-display:inline-block; padding:18px 36px; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.6);}
+.header{
+  text-align:center; padding:80px 20px 40px;
+}
+.header h1{
+  margin:0; font-size:36px; background: rgba(76,29,149,0.75);
+  display:inline-block; padding:18px 36px; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
 .header p{ margin-top:15px; opacity:0.85; }
+
+#backBtn{
+  margin-top:10px; padding:8px 16px; border:none; border-radius:12px;
+  background:#9333ea; color:white; cursor:pointer;
+}
 
 .container{ max-width:950px; margin:auto; padding:20px 25px 80px; display:grid; grid-gap:25px; }
 
@@ -49,13 +58,17 @@ transform: scale(0.9); transition: transform 0.2s ease-in-out; }
 .modal textarea{ width:100%; min-height:60px; margin-top:10px; border-radius:10px; padding:10px; border:none; resize:vertical; }
 .modal button{ margin-top:10px; padding:10px 20px; border:none; border-radius:12px; cursor:pointer; background:#9333ea; color:white; }
 .close-btn{ position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px; font-weight:bold; }
+
+.signature{ position:fixed; bottom:10px; right:15px; opacity:0.7; font-size:13px; }
+.deleteBtn{ background:#dc2626; margin-left:10px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>📂 Avis Staff — Destiny RP</h1>
+  <h1> Avis Staff — Destiny V2</h1>
   <p>Consultation interne des évaluations staff</p>
+  <button id="backBtn" onclick="window.location.href='index.html'">← Retour</button>
 </div>
 
 <div class="container" id="avisContainer"></div>
@@ -77,8 +90,11 @@ transform: scale(0.9); transition: transform 0.2s ease-in-out; }
     <div id="modalCommentaires"></div>
     <textarea id="newComment" placeholder="Ajouter un commentaire..."></textarea>
     <button onclick="ajouterCommentaire()">Ajouter</button>
+    <button class="deleteBtn" onclick="supprimerAvis()">Supprimer mon avis</button>
   </div>
 </div>
+
+<div class="signature">site créé par Welonyx le GOAT</div>
 
 <script>
 let avisList = JSON.parse(localStorage.getItem("avis_staff")||"[]");
@@ -93,7 +109,7 @@ function afficherAvis(){
   avisList.reverse().forEach((a,i)=>{
     const card=document.createElement("div");
     card.className="card";
-    card.innerHTML=`<h3>👤 ${a.staff} — ${a.role}</h3>
+    card.innerHTML=`<h3>${a.staff} — ${a.role}</h3>
     <span class="badge ${a.decision==="UP"?"up":"demote"}">${a.decision}</span>
     <div class="date">${a.date}</div>`;
     card.onclick=()=>ouvrirModal(i);
@@ -146,6 +162,15 @@ function ajouterCommentaire(){
   localStorage.setItem("avis_staff", JSON.stringify(avisList));
   newComment.value="";
   afficherCommentaires();
+}
+
+function supprimerAvis(){
+  if(confirm("Voulez-vous vraiment supprimer cet avis ?")){
+    avisList.splice(currentIndex,1); 
+    localStorage.setItem("avis_staff",JSON.stringify(avisList));
+    modalBg.style.display="none";
+    afficherAvis(); 
+  }
 }
 
 afficherAvis();
